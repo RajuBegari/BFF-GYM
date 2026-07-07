@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Lead Contact Form Simulation
+  // 6. Lead Contact Form Integration with WhatsApp
   const contactForm = document.getElementById('contactForm');
   const formMessage = document.getElementById('formMessage');
 
@@ -165,26 +165,46 @@ document.addEventListener('DOMContentLoaded', () => {
       const originalText = submitBtn.textContent;
       
       // Loading State
-      submitBtn.textContent = 'Enrolling...';
+      submitBtn.textContent = 'Connecting to WhatsApp...';
       submitBtn.disabled = true;
       formMessage.style.display = 'none';
 
-      // Simulate API submit latency
+      // Capture Form Data
+      const nameVal = document.getElementById('name').value;
+      const emailVal = document.getElementById('email').value;
+      const phoneVal = document.getElementById('phone').value;
+      const programSelect = document.getElementById('programSelect');
+      const programVal = programSelect.options[programSelect.selectedIndex].text;
+      const commentsVal = document.getElementById('comments').value;
+
+      // Construct WhatsApp Message
+      const messageText = `Hello Body Flex Fitness (BFF)! I would like to submit an enrollment request:\n\n` +
+                          `👤 *Name*: ${nameVal}\n` +
+                          `✉️ *Email*: ${emailVal}\n` +
+                          `📞 *Phone*: ${phoneVal}\n` +
+                          `💪 *Program*: ${programVal}\n` +
+                          `🎯 *Goals/Comments*: ${commentsVal || 'N/A'}`;
+
+      // Encode for WhatsApp URI
+      const whatsappUrl = `https://wa.me/918686485959?text=${encodeURIComponent(messageText)}`;
+
+      // Redirect window action
       setTimeout(() => {
-        const nameVal = document.getElementById('name').value;
-        
         // Reset Button
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
 
         // Display Success Response
         formMessage.className = 'form-message success';
-        formMessage.textContent = `Thank you, ${nameVal}! Your enrollment request has been logged. A certified trainer will call or email you within 24 hours.`;
+        formMessage.textContent = `Redirecting you to WhatsApp to complete your enrollment request...`;
         formMessage.style.display = 'block';
+
+        // Redirect to WhatsApp
+        window.open(whatsappUrl, '_blank');
 
         // Clear Form
         contactForm.reset();
-      }, 1500);
+      }, 1000);
     });
   }
 });
